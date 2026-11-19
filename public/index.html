@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ATTENDANCE — a living pulse of the workday</title>
+<meta name="description" content="Attendance reimagined as a living pulse. Check in, check out, and watch the team's day breathe in real time.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="canonical" href="http://localhost:3000/">
+<meta property="og:title" content="ATTENDANCE — a living pulse">
+<meta property="og:description" content="Attendance reimagined as a living pulse of the workday.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='6' fill='%23d8f34a'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,600;9..144,900&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="./styles.css">
+
+<script type="importmap">
+{
+  "imports": {
+    "gsap": "https://esm.sh/gsap@3.12.5",
+    "gsap/ScrollTrigger": "https://esm.sh/gsap@3.12.5/ScrollTrigger",
+    "lenis": "https://esm.sh/lenis@1.1.13"
+  }
+}
+</script>
+<script type="module" src="./app.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="preloader" data-preloader aria-hidden="true">
+  <div class="preloader__inner">
+    <span class="preloader__num" data-preload-num>000</span>
+    <span class="preloader__label">loading the pulse</span>
+  </div>
+</div>
+
+<div class="cursor" data-cursor aria-hidden="true"></div>
+
+<header class="nav" data-nav>
+  <div class="nav__inner">
+    <a class="nav__brand" href="#hero">ATTENDANCE<span class="nav__dot">.</span></a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="#dashboard">Dashboard</a>
+      <a href="#checkin">Check in</a>
+      <a href="#roster">Roster</a>
+      <a href="#records">Records</a>
+    </nav>
+    <div class="nav__status" data-nav-status>
+      <span class="pulse-dot"></span>
+      <span data-live-count>—</span> present
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow" data-reveal>Attendance / 01 — Living pulse</p>
+        <h1 class="hero__title" data-split>
+          The workday,<br>
+          <em>breathing.</em>
+        </h1>
+        <p class="hero__lede" data-reveal>
+          Not a spreadsheet. A living signal of who's in, who's late, who's remote —
+          rendered as a pulse you can feel. Built for teams that treat presence as a
+          rhythm, not a record.
+        </p>
+        <div class="hero__cta" data-reveal>
+          <a class="btn btn--primary magnetic" href="#checkin">
+            <span>Check in now</span>
+            <svg class="btn__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+          </a>
+          <a class="btn btn--ghost magnetic" href="#dashboard">View pulse</a>
+        </div>
+      </div>
+      <div class="hero__visual">
+        <canvas class="pulse-canvas" data-pulse-canvas aria-hidden="true"></canvas>
+        <div class="hero__clock">
+          <span class="hero__clock-time" data-clock>00:00:00</span>
+          <span class="hero__clock-label">local time</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero__scroll-hint" aria-hidden="true">
+      <span>scroll</span>
+      <span class="hero__scroll-line"></span>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section class="section dashboard" id="dashboard">
+    <div class="section__head">
+      <p class="eyebrow">02 — Today's pulse</p>
+      <h2 class="section__title" data-split>Four numbers,<br>one morning.</h2>
+    </div>
+    <div class="stats" data-stagger>
+      <article class="stat" data-stat="present">
+        <span class="stat__label">Present</span>
+        <span class="stat__value" data-stat-value="present">0</span>
+        <span class="stat__sub">checked in on time</span>
+      </article>
+      <article class="stat" data-stat="late">
+        <span class="stat__label">Late</span>
+        <span class="stat__value" data-stat-value="late">0</span>
+        <span class="stat__sub">after 09:00</span>
+      </article>
+      <article class="stat" data-stat="remote">
+        <span class="stat__label">Remote</span>
+        <span class="stat__value" data-stat-value="remote">0</span>
+        <span class="stat__sub">working away</span>
+      </article>
+      <article class="stat" data-stat="absent">
+        <span class="stat__label">Absent</span>
+        <span class="stat__value" data-stat-value="absent">0</span>
+        <span class="stat__sub">not yet seen</span>
+      </article>
+    </div>
+
+    <div class="day-ring-wrap" data-reveal>
+      <div class="day-ring">
+        <svg viewBox="0 0 200 200" class="day-ring__svg" aria-hidden="true">
+          <circle class="day-ring__track" cx="100" cy="100" r="86" />
+          <circle class="day-ring__fill" cx="100" cy="100" r="86" data-day-ring />
+        </svg>
+        <div class="day-ring__center">
+          <span class="day-ring__num" data-day-pct>0%</span>
+          <span class="day-ring__label">day present</span>
+        </div>
+      </div>
+      <div class="trend" data-trend>
+        <p class="trend__label">Last 7 days</p>
+        <div class="trend__bars" data-trend-bars></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHECK IN -->
+  <section class="section checkin" id="checkin">
+    <div class="section__head">
+      <p class="eyebrow">03 — Check in</p>
+      <h2 class="section__title" data-split>One tap.<br><em>One pulse.</em></h2>
+    </div>
+    <div class="checkin__panel" data-reveal>
+      <label class="field">
+        <span class="field__label">Who are you?</span>
+        <select class="field__input" data-emp-select></select>
+      </label>
+      <div class="checkin__actions">
+        <button class="btn btn--primary btn--xl magnetic" data-checkin-btn>
+          <span>Check in</span>
+        </button>
+        <button class="btn btn--ghost magnetic" data-checkout-btn>Check out</button>
+        <button class="btn btn--ghost magnetic" data-remote-btn>Mark remote</button>
+      </div>
+      <p class="checkin__msg" data-checkin-msg aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- ROSTER -->
+  <section class="section roster" id="roster">
+    <div class="section__head">
+      <p class="eyebrow">04 — Today's roster</p>
+      <h2 class="section__title" data-split>Who's in the room.</h2>
+    </div>
+    <ul class="roster__list" data-roster></ul>
+  </section>
+
+  <!-- RECORDS -->
+  <section class="section records" id="records">
+    <div class="section__head">
+      <p class="eyebrow">05 — Records</p>
+      <h2 class="section__title" data-split>The ledger.</h2>
+      <div class="records__filter">
+        <input type="date" class="field__input" data-rec-date>
+      </div>
+    </div>
+    <div class="records__table-wrap">
+      <table class="records__table">
+        <thead>
+          <tr><th>Name</th><th>Dept</th><th>Check in</th><th>Check out</th><th>Status</th></tr>
+        </thead>
+        <tbody data-records-body></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <p class="footer__big" data-split>Attendance,<br>as a heartbeat.</p>
+    <p class="footer__meta">Built with Node.js + MySQL · Awwwards-standard craft</p>
+  </div>
+</footer>
